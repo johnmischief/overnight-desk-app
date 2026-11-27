@@ -648,6 +648,7 @@
       // PAPER / LIVE
       var live = A.mode === "LIVE";
       box.appendChild(h("div", { class: "grp", style: "padding:12px 14px" }, [h("div", { style: "display:flex;justify-content:space-between;align-items:center;margin-bottom:8px" }, [h("span", { style: "font:600 17px var(--text-font)", text: "Mode" }), tgTag()]),
+        h("div", { class: "note live-line", style: "margin:0 0 8px;color:var(--t1)", text: A.live_line || "LIVE trades real cash on FOMO. New coins can go to 0 in minutes. Only put in what you can lose." }),
         h("div", { class: "seg off" }, ["PAPER", "LIVE"].map(function (m) { return h("button", { class: (live ? m === "LIVE" : m === "PAPER") ? "on" : "", text: m, onclick: function () { tgSheet(m === "LIVE" ? "Switch to LIVE" : "Switch to PAPER", m === "LIVE" ? "live" : "paper", m === "LIVE" ? "LIVE needs the typed word LIVE, and stays locked until STEP 15 passes." : null); } }); })),
         h("div", { class: "note", style: "margin-top:8px", text: live ? "LIVE: real cash on FOMO." : "PAPER: simulated cash. " + (A.live_locked || "") })]));
       // cash
