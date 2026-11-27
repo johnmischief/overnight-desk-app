@@ -91,10 +91,14 @@
   function closeSheet() { $("scrim").classList.remove("on"); $("sheet").classList.remove("on"); }
   $("scrim").addEventListener("click", closeSheet);
   // every write control: shown, marked, and routed to Telegram
+  function botName() { var t = D.account && D.account.telegram; return (t && t.bot) || "misch_desk_bot"; }
   function tgSheet(title, command, extra) {
     var nodes = [h("h3", { text: title }),
-      h("div", { class: "note", text: "The phone can only read the desk right now (Plan B), so this goes through Telegram (STEP 11, not set up yet). It will be the command below." })];
-    if (command) { nodes.push(h("div", { class: "cmd", text: command })); nodes.push(h("button", { class: "btn blue", text: "Copy command", onclick: function () { copy(command); } })); }
+      h("div", { class: "note", text: "The phone can only read the desk right now (Plan B), so this goes through Telegram. Send the command below to @" + botName() + "; it answers there." })];
+    if (command) {
+      nodes.push(h("div", { class: "cmd", text: command })); nodes.push(h("button", { class: "btn blue", text: "Copy command", onclick: function () { copy(command); } }));
+      nodes.push(h("button", { class: "btn", style: "margin-top:10px", text: "Open Telegram", onclick: function () { window.open("https://t.me/" + botName(), "_blank", "noopener"); } }));
+    }
     if (extra) nodes.push(h("div", { class: "note", style: "margin-top:10px", text: extra }));
     nodes.push(h("button", { class: "btn", style: "margin-top:10px", text: "Close", onclick: closeSheet }));
     openSheet(nodes);
@@ -437,7 +441,7 @@
     var list = ps.length ? h("div", { class: "list plain", style: "margin:0" }, ps.map(function (p) {
       return h("div", { class: "row" }, [h("div", { class: "mid" }, [h("div", { class: "t", style: "white-space:normal", text: p.title }), h("div", { class: "s", style: "white-space:normal", text: (p.body || "").split("\n")[0] + " · " + clock(p.ts) })])]);
     })) : h("div", { class: "empty", text: "No notifications yet" });
-    openSheet([h("h3", { text: "Notifications" }), list, h("div", { class: "note", style: "margin-top:10px", text: "Pushes go to Telegram (STEP 11). Plan B has no web push; this is the desk's own list." }), h("button", { class: "btn", style: "margin-top:10px", text: "Close", onclick: closeSheet })]);
+    openSheet([h("h3", { text: "Notifications" }), list, h("div", { class: "note", style: "margin-top:10px", text: "Pushes go to Telegram (@" + botName() + "). Plan B has no web push; this is the desk's own list." }), h("button", { class: "btn", style: "margin-top:10px", text: "Close", onclick: closeSheet })]);
     if (cur && cur.update) cur.update();
   }
   function searchSheet() {
@@ -590,9 +594,9 @@
     var pct = 100, cmd = h("div", { class: "cmd" });
     function paint() { cmd.textContent = "sell " + symbol + " " + pct; [].forEach.call(seg.children, function (b) { b.classList.toggle("on", b.textContent === pct + "%"); }); }
     var seg = h("div", { class: "seg" }, [25, 50, 100].map(function (p) { return h("button", { text: p + "%", onclick: function () { pct = p; paint(); } }); }));
-    openSheet([h("h3", { text: "Sell " + symbol }), seg, h("div", { class: "note", style: "margin-top:12px", text: "Confirm sell would POST /api/sell and Executor would click it. The phone can't reach the desk (Plan B): send this in Telegram instead (STEP 11)." }), cmd,
+    openSheet([h("h3", { text: "Sell " + symbol }), seg, h("div", { class: "note", style: "margin-top:12px", text: "The phone can't reach the desk (Plan B). Send this to @" + botName() + " in Telegram: it asks \"Sell N% of " + symbol + " now?\" and Executor sells when you say yes." }), cmd,
       h("button", { class: "btn blue", text: "Copy command", onclick: function () { copy(cmd.textContent); } }),
-      h("button", { class: "btn off", style: "margin-top:10px", text: "Confirm sell · via Telegram", onclick: function () { toast("Goes through Telegram (STEP 11)"); } }),
+      h("button", { class: "btn off", style: "margin-top:10px", text: "Confirm sell · via Telegram", onclick: function () { copy(cmd.textContent); toast("Command copied. Send it to the desk bot."); } }),
       h("button", { class: "btn", style: "margin-top:10px", text: "Close", onclick: closeSheet })]);
     paint();
   }
@@ -623,7 +627,7 @@
       var ready = !!(D.state && D.account); skel.hidden = ready; box.hidden = !ready; if (!ready) return;
       var A = D.account, S = D.settings || {}, st = D.state;
       box.textContent = "";
-      box.appendChild(h("div", { class: "banner", text: (A.writes && A.writes.note) || "Changes from the phone go through Telegram (STEP 11)." }));
+      box.appendChild(h("div", { class: "banner", text: (A.writes && A.writes.note) || "Changes from the phone go through Telegram." }));
       // PAPER / LIVE
       var live = A.mode === "LIVE";
       box.appendChild(h("div", { class: "grp", style: "padding:12px 14px" }, [h("div", { style: "display:flex;justify-content:space-between;align-items:center;margin-bottom:8px" }, [h("span", { style: "font:600 17px var(--text-font)", text: "Mode" }), tgTag()]),
@@ -655,8 +659,8 @@
       var subs = A.push_subscriptions || 0;
       box.appendChild(h("div", { class: "grp" }, [
         rowK("Vault", "Plugin or files: not set up yet (STEP 16)", h("span", { class: "dim", text: "files" })),
-        rowK("Pushes", "Plan B: Telegram only, no web push", h("span", { class: subs ? "green" : "dim", text: subs ? "connected" : "not connected" })),
-        rowK("Send test push", null, h("button", { class: "dis", text: "via Telegram", onclick: function () { tgSheet("Send test push", null, "A test push needs the Telegram bot (STEP 11)."); } })),
+        rowK("Pushes", "Plan B: Telegram only, no web push", h("span", { class: (A.telegram && A.telegram.bound) || subs ? "green" : "dim", text: (A.telegram && A.telegram.bound) ? "Telegram connected" : subs ? "connected" : "not paired yet" })),
+        rowK("Send test push", null, h("button", { class: "dis", text: "via Telegram", onclick: function () { tgSheet("Send test push", "test", "The desk answers with a test push in Telegram."); } })),
         rowK("Watch in Grok Bot", "Opens your own computer preview (no link published yet)", h("button", { class: "dis", text: "Not connected", onclick: function () { toast("No preview link yet"); } }))]));
       // recent changes
       var ch = A.recent_changes || [];
