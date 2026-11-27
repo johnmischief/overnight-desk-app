@@ -21,3 +21,8 @@ h2{margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.07em;c
 .notice{margin:8px 12px;padding:12px;border-radius:10px;background:#2b3345;font-size:14px}
 canvas{width:100%;height:auto;display:block}
 .row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #2b3345;font-size:14px}
+
+.row{flex-wrap:wrap;align-items:baseline}
+.row-link{flex-basis:100%;padding-top:2px}
+a.fomo{color:#7eb6ff;font-size:13px;text-decoration:none}
+a.fomo:active,a.fomo:hover{text-decoration:underline}

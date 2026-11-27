@@ -28,6 +28,18 @@
 
   function money(v) { return v == null ? "n/a" : "$" + Number(v).toFixed(2); }
 
+  // href is the exact coin_url / profile_url the desk put in the gist. Never rewrite or wrap it.
+  function fomoLink(url, label) {
+    if (!url) return null;
+    var a = document.createElement("a");
+    a.href = url;
+    a.textContent = label || "Open on FOMO";
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.className = "fomo";
+    return a;
+  }
+
   function ago(sec) {
     if (sec < 90) return Math.round(sec) + "s";
     if (sec < 5400) return Math.round(sec / 60) + "m";
@@ -80,7 +92,10 @@
       var r = document.createElement("div"); r.className = "row";
       var a = document.createElement("span"), b = document.createElement("span");
       a.textContent = p.symbol || p.mint || "?"; b.textContent = money(p.usd);
-      r.appendChild(a); r.appendChild(b); box.appendChild(r);
+      r.appendChild(a); r.appendChild(b);
+      var open = fomoLink(p.coin_url);
+      if (open) { var c = document.createElement("div"); c.className = "row-link"; c.appendChild(open); r.appendChild(c); }
+      box.appendChild(r);
     });
   }
 
@@ -92,7 +107,10 @@
       var r = document.createElement("div"); r.className = "row";
       var a = document.createElement("span"), b = document.createElement("span");
       a.textContent = it.text || ""; b.textContent = it.ts ? new Date(it.ts * 1000).toLocaleTimeString() : "";
-      r.appendChild(a); r.appendChild(b); box.appendChild(r);
+      r.appendChild(a); r.appendChild(b);
+      var open = fomoLink(it.coin_url);
+      if (open) { var c = document.createElement("div"); c.className = "row-link"; c.appendChild(open); r.appendChild(c); }
+      box.appendChild(r);
     });
   }
 
@@ -102,6 +120,12 @@
     text($("cash"), money(state && state.cash && state.cash.usdc));
     var sol = state && state.cash && state.cash.sol;
     text($("sol"), sol == null ? "" : sol + " SOL");
+    var prof = $("profile");
+    if (prof) {
+      prof.textContent = "";
+      var pl = fomoLink(state && state.profile_url, (state && state.handle) ? "@" + String(state.handle).replace(/^@/, "") : "Open on FOMO");
+      if (pl) prof.appendChild(pl);
+    }
     renderBots(state && state.bots);
     renderPositions(state && state.positions);
     renderActivity(act);
