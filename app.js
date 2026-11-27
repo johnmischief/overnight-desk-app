@@ -604,7 +604,7 @@
   // ------------------------------------------------------------ ACCOUNT tab
   var GROUPS = ["scanner", "analyst", "social", "brain", "executor", "risk", "regime", "picks", "vault", "repos", "browser", "desk"];
   var HIDE = { "desk.mode": 1, "desk.paper_start_cash": 1, "desk.click_lane": 0 };
-  function maskVal(k, v) { return /address|url/i.test(k) && v ? "set" : v; }
+  function maskVal(k, v) { if (typeof v === "string" && /^set( ·|$)/.test(v)) return v; return /address|url/i.test(k) && v ? "set" : v; }
   function Account(root, focus) {
     var nav = h("div", { class: "nav" }, [h("h1", { text: "Account", style: "text-align:left" })]);
     var box = h("div"), skel = sk([60, 100, 150, 300]);
