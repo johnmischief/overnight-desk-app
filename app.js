@@ -118,6 +118,14 @@
     var mode = (state && state.mode) || "?";
     text($("mode"), mode); $("mode").className = "pill " + mode.toLowerCase();
     text($("cash"), money(state && state.cash && state.cash.usdc));
+    var balEl = $("bal");
+    if (balEl) {
+      var parts = [];
+      if (state && state.balance != null) parts.push("Balance " + money(state.balance));
+      if (state && state.today_pct != null) parts.push("today " + (state.today_pct >= 0 ? "+" : "") + state.today_pct.toFixed(1) + "%");
+      if (state && state.multiplier != null) parts.push(state.multiplier.toFixed(2) + "x");
+      balEl.textContent = parts.join(" · ");
+    }
     var sol = state && state.cash && state.cash.sol;
     text($("sol"), sol == null ? "" : sol + " SOL");
     var prof = $("profile");
@@ -155,12 +163,33 @@
     });
   }
 
+  function savePasted(txt) {
+    // Accept the full desk link. #d=<id> (Plan B) is the data key; #t=<token> (Plan A) is only kept locally.
+    var d = String(txt || "").match(/[#&]d=([0-9a-f]{20,40})/i);
+    var t = String(txt || "").match(/[#&]t=([A-Za-z0-9_\-]{20,})/);
+    if (t) localStorage.setItem("desk.token", t[1]);
+    if (d) { localStorage.setItem(KEY, d[1]); return true; }
+    return !!t;
+  }
+
+  function showPaste() {
+    var f = $("paste"); if (!f) return;
+    f.hidden = false;
+    f.onsubmit = function (e) {
+      e.preventDefault();
+      var v = $("link").value; $("link").value = "";
+      if (savePasted(v)) { f.hidden = true; start(); }
+      else say("That link doesn't look right. Paste the whole desk link.");
+    };
+  }
+
   function start() {
     gist = readHash();
     if (!gist || !owner()) {
-      say("Open your private desk link to connect. (This page has no data by itself.)");
+      say(""); showPaste();
       return;
     }
+    if ($("paste")) $("paste").hidden = true;
     tick(); timer = setInterval(tick, POLL_MS);
     document.addEventListener("visibilitychange", function () { if (!document.hidden) tick(); });
     if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(function () {});

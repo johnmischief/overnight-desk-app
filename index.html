@@ -16,10 +16,16 @@
   <span id="mode" class="pill">…</span>
 </header>
 <div id="notice" class="notice" hidden></div>
+<form id="paste" class="card paste" hidden autocomplete="off">
+  <label for="link">Paste your desk link</label>
+  <input id="link" type="url" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="https://…#d=…">
+  <button type="submit">Connect</button>
+</form>
 <main id="app" hidden>
   <section class="card">
     <h2>Cash (USDC on chain)</h2>
     <div id="cash" class="big">…</div>
+    <div id="bal" class="dim"></div>
     <div id="sol" class="dim"></div>
     <div id="profile" class="dim"></div>
     <div id="fresh" class="dim"></div>

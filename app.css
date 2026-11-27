@@ -19,6 +19,7 @@ h2{margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.07em;c
 .bot .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#8693ab;margin-right:6px}
 .bot.ok .dot{background:#5fd068}.bot.down .dot{background:#ff6b6b}
 .notice{margin:8px 12px;padding:12px;border-radius:10px;background:#2b3345;font-size:14px}
+.paste{margin:12px;display:grid;gap:10px}.paste label{font-size:14px;color:#9aa6bd}.paste input{font:16px system-ui;padding:12px;border-radius:10px;border:1px solid #2b3345;background:#141821;color:#e8ecf3}.paste button{font:600 16px system-ui;padding:12px;border-radius:10px;border:0;background:#3b6fd6;color:#fff}
 canvas{width:100%;height:auto;display:block}
 .row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #2b3345;font-size:14px}
 
