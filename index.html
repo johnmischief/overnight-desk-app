@@ -5,36 +5,26 @@
 <title>Overnight Desk</title>
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="app.css">
-<meta name="theme-color" content="#141821">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Desk">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="icon" href="icons/icon-192.png">
 </head><body>
-<header>
-  <h1>Overnight Desk</h1>
-  <span id="mode" class="pill">…</span>
-</header>
-<div id="notice" class="notice" hidden></div>
-<form id="paste" class="card paste" hidden autocomplete="off">
-  <label for="link">Paste your desk link</label>
-  <input id="link" type="url" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="https://…#d=…">
-  <button type="submit">Connect</button>
-</form>
-<main id="app" hidden>
-  <section class="card">
-    <h2>Cash (USDC on chain)</h2>
-    <div id="cash" class="big">…</div>
-    <div id="bal" class="dim"></div>
-    <div id="sol" class="dim"></div>
-    <div id="profile" class="dim"></div>
-    <div id="fresh" class="dim"></div>
-  </section>
-  <section class="card"><h2>Bots</h2><div id="bots" class="bots"></div></section>
-  <section class="card"><h2>Open positions</h2><div id="positions"></div></section>
-  <section class="card"><h2>Activity</h2><div id="activity"></div></section>
-  <section class="card"><h2>Equity</h2><canvas id="chart" width="640" height="160"></canvas><div id="chart-empty" class="empty"></div></section>
-</main>
+<div id="shell"><div id="view"></div></div>
+<nav id="tabs" hidden><div class="in">
+  <button data-tab="home" aria-label="Home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
+  <button data-tab="bots" aria-label="Bots"><svg viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9 13h.01M15 13h.01M9 17h6"/></svg>Bots</button>
+  <button data-tab="activity" aria-label="Activity"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>Activity</button>
+  <button data-tab="account" aria-label="Account"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>Account</button>
+</div></nav>
+<div id="scrim"></div>
+<div id="sheet" role="dialog" aria-modal="true"></div>
+<div id="full"><div class="stage"><img id="fullimg" alt="Bot screen"></div>
+  <div class="top"><button class="iconbtn" id="fullclose" aria-label="Close" style="background:rgba(0,0,0,.55)"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="bot2" id="fullbot"></div></div>
 <script src="chart.js"></script>
 <script src="app.js"></script>
 </body></html>
