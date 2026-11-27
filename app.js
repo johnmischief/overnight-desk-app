@@ -615,10 +615,27 @@
       var label = key.split(".").slice(1).join(".").replace(/_/g, " "), v = s.value, rg = s.range, field;
       var cmd = "set " + key.split(".")[0] + " " + label + " to " + (typeof v === "boolean" ? v : v);
       var top = h("div", { class: "top" }, [h("span", { class: "k", text: label }), h("span", { class: "rg", text: Array.isArray(rg) && typeof rg[0] === "number" ? rg[0] + "–" + rg[1] : "" })]);
-      var el = h("div", { class: "setting tap", onclick: function () { tgSheet("Change " + label, cmd); } }, [top]);
-      if (Array.isArray(rg) && typeof rg[0] === "number" && typeof v === "number") {
-        top.insertBefore(h("input", { type: "number", value: v, disabled: true, "aria-label": label + " exact value" }), top.lastChild);
-        el.appendChild(h("input", { type: "range", min: rg[0], max: rg[1], step: (rg[1] - rg[0]) > 100 ? 1 : "any", value: v, disabled: true, "aria-label": label }));
+      var numeric = Array.isArray(rg) && typeof rg[0] === "number" && typeof v === "number";
+      var el = h("div", { class: "setting" + (numeric ? "" : " tap"), onclick: numeric ? null : function () { tgSheet("Change " + label, cmd); } }, [top]);
+      if (numeric) {
+        var lo = rg[0], hi = rg[1], whole = v % 1 === 0 && lo % 1 === 0 && hi % 1 === 0;
+        var msg = h("div", { class: "rgmsg", role: "status", text: "" });
+        var num = h("input", { type: "number", step: "any", value: v, "aria-label": label + " exact value" });
+        var sl = h("input", { type: "range", min: lo, max: hi, step: whole ? ((hi - lo) > 100 ? 1 : 1) : ((hi - lo) > 100 ? 1 : "any"), value: v, "aria-label": label });
+        function fmt(x) { return String(Math.round(x * 1e6) / 1e6); }
+        function send(x) {
+          var c = "set " + key.split(".")[0] + " " + label + " to " + fmt(x);
+          tgSheet("Change " + label + ": " + fmt(v) + " → " + fmt(x), c, "Allowed range " + lo + "–" + hi + ". Nothing changes until you send this to the desk bot; it refuses out-of-range values and says the range.");
+        }
+        sl.addEventListener("input", function () { num.value = sl.value; msg.textContent = ""; });
+        sl.addEventListener("change", function () { var x = Number(sl.value); if (x !== v) send(x); });
+        num.addEventListener("change", function () {
+          var raw = num.value.trim(), x = Number(raw);
+          if (raw === "" || !isFinite(x)) { num.value = v; sl.value = v; msg.textContent = "Enter a number between " + lo + " and " + hi; return; }
+          if (x < lo || x > hi) { num.value = v; sl.value = v; msg.textContent = "Out of range: " + label + " must be between " + lo + " and " + hi; return; }
+          msg.textContent = ""; sl.value = x; if (x !== v) send(x);
+        });
+        top.insertBefore(num, top.lastChild); el.appendChild(sl); el.appendChild(msg);
       } else if (typeof v === "boolean") top.insertBefore(h("span", { class: "sw" + (v ? " on" : "") + " locked" }, [h("i")]), top.lastChild);
       else top.insertBefore(h("span", { class: "nf", style: "width:auto;min-width:92px;line-height:34px;display:inline-block", text: String(maskVal(key, v) == null || maskVal(key, v) === "" ? "—" : maskVal(key, v)) }), top.lastChild);
       return el;
