@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Overnight Desk</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="app.css">
+<meta name="theme-color" content="#141821">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Desk">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-192.png">
+</head><body>
+<header>
+  <h1>Overnight Desk</h1>
+  <span id="mode" class="pill">…</span>
+</header>
+<div id="notice" class="notice" hidden></div>
+<main id="app" hidden>
+  <section class="card">
+    <h2>Cash (USDC on chain)</h2>
+    <div id="cash" class="big">…</div>
+    <div id="sol" class="dim"></div>
+    <div id="fresh" class="dim"></div>
+  </section>
+  <section class="card"><h2>Bots</h2><div id="bots" class="bots"></div></section>
+  <section class="card"><h2>Open positions</h2><div id="positions"></div></section>
+  <section class="card"><h2>Activity</h2><div id="activity"></div></section>
+  <section class="card"><h2>Equity</h2><canvas id="chart" width="640" height="160"></canvas><div id="chart-empty" class="empty"></div></section>
+</main>
+<script src="chart.js"></script>
+<script src="app.js"></script>
+</body></html>
