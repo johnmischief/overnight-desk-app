@@ -676,7 +676,7 @@
       // vault, pushes, watch
       var subs = A.push_subscriptions || 0;
       box.appendChild(h("div", { class: "grp" }, [
-        rowK("Vault", "Plugin or files: not set up yet (STEP 16)", h("span", { class: "dim", text: "files" })),
+        rowK("Vault", (A.vault ? A.vault.notes + " notes · " + (A.vault.last_write ? "last write " + clock(A.vault.last_write) : "no write yet") + " · " + A.vault.where : "Plugin or files: not set up yet"), h("span", { class: "dim", text: A.vault ? A.vault.label : "Vault: files · not on iPhone" })),
         rowK("Pushes", "Plan B: Telegram only, no web push", h("span", { class: (A.telegram && A.telegram.bound) || subs ? "green" : "dim", text: (A.telegram && A.telegram.bound) ? "Telegram connected" : subs ? "connected" : "not paired yet" })),
         rowK("Send test push", null, h("button", { class: "dis", text: "via Telegram", onclick: function () { tgSheet("Send test push", "test", "The desk answers with a test push in Telegram."); } })),
         rowK("Watch in Grok Bot", "Opens your own computer preview (no link published yet)", h("button", { class: "dis", text: "Not connected", onclick: function () { toast("No preview link yet"); } }))]));
